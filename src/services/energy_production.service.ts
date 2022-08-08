@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { powerPlants, PowerPlantsItem, ProductionInterval } from '../models/power_plants'
+import { convertJsonToCsv } from '../utils/jsonToCsvConverter'
 
 class EnergyProductionService {
     async getPowerPlantProduction(powerPlant: PowerPlantsItem, params: {from: string, to: string}): Promise<ProductionInterval[]> {
@@ -33,12 +34,15 @@ class EnergyProductionService {
         }
     }
 
-    async getTotalProduction(from: string, to: string) {
+    async getTotalProduction(from: string, to: string, format: 'json' | 'csv') {
         const params = {from, to}
         return Promise.all(powerPlants.map((powerPlant) => this.getPowerPlantProduction(powerPlant, params)))
         .then((response) => {
-            console.log(response.map(x => x[0]))
-            return response
+            const result = this.aggregateAllResult(response)
+
+            return format === 'json'
+                ? result
+                : convertJsonToCsv(result)
         })
         .catch(function (error) {
             console.log(error);
