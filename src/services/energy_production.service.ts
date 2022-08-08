@@ -34,14 +34,14 @@ class EnergyProductionService {
         }
     }
 
-    async getTotalProduction(from: string, to: string, format: 'json' | 'csv') {
+    async getTotalProduction(from: string, to: string, format: string) {
         const params = {from, to}
         return Promise.all(powerPlants.map((powerPlant) => this.getPowerPlantProduction(powerPlant, params)))
         .then((response) => {
             const result = this.aggregateAllResult(response)
 
             return format === 'json'
-                ? result
+                ? { result }
                 : convertJsonToCsv(result)
         })
         .catch(function (error) {
