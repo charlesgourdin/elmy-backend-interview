@@ -81,6 +81,40 @@ describe('Energy Production Service', () => {
         }])
     })
 
+    it(`should fill power plant missing data`, async () => {
+        const interval = 10
+        const data = [
+            {
+                start: 0,
+                end: 10,
+                power: 5
+            },
+            {
+                start: 10,
+                end: 20,
+                power: 5
+            },
+            {
+                start: 30,
+                end: 40,
+                power: 5
+            },
+            {
+                start: 40,
+                end: 50,
+                power: 5
+            }
+        ]
+        const expectedSum = (data.length + 1) * 5
+
+        const result = EnergyProductionService.fillInMissingData(data, interval)
+        const resultSum = result.reduce((acc, { power }) => {
+            return acc + power
+        }, 0)
+
+        expect(resultSum).to.equal(expectedSum)
+    })
+
     after(async () => {
         //do something
     });

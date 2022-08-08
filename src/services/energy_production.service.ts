@@ -58,6 +58,22 @@ class EnergyProductionService {
             }
         })
     }
+
+    fillInMissingData(data: ProductionInterval[], interval: number): ProductionInterval[] {
+        data.forEach((item, index) => {
+            if(item.end !== data[index + 1].start) {
+                const missingItem = {
+                    start: item.end,
+                    end: item.end + interval,
+                    power: Math.ceil((item.power + data[index + 1].power) / 2)
+                }
+
+                data.splice(index + 1, 0, missingItem)
+            }
+        })
+
+        return data
+    }
 }
 
 export default new EnergyProductionService()
