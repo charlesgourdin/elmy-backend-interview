@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { powerPlants, PowerPlantsItem, ProductionInterval } from '../models/power_plants'
 import { convertJsonToCsv } from '../utils/jsonToCsvConverter'
+import { reverseDate } from '../utils/dateConverter'
 
 class EnergyProductionService {
     async getPowerPlantProduction(powerPlant: PowerPlantsItem, params: {from: string, to: string}): Promise<ProductionInterval[]> {
@@ -33,10 +34,9 @@ class EnergyProductionService {
         }
     }
 
-    async getTotalProduction(queryParams) {
-        const {from, to, format} = queryParams
-
-        return Promise.all(powerPlants.map((powerPlant) => this.getPowerPlantProduction(powerPlant, {from, to})))
+    async getTotalProduction(from: string, to: string, format: string) {
+        return Promise.all(powerPlants
+            .map((powerPlant) => this.getPowerPlantProduction(powerPlant, {from: reverseDate(from), to: reverseDate(to)})))
         .then((response) => {
             const result = this.aggregateAllResult(response)
 

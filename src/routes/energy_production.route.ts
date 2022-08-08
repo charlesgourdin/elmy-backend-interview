@@ -5,6 +5,6 @@ const router = express.Router();
 
 const EnergyProductionCtrl = new EnergyProductionController()
 
-router.get('/', EnergyProductionCtrl.getGlobalProduction)
+router.post('/', EnergyProductionCtrl.getGlobalProduction)
 
 export default router
