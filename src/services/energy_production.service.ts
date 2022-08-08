@@ -29,14 +29,14 @@ class EnergyProductionService {
 
             return this.fillInMissingData(data, interval)
         } catch (error) {
-            console.log(error)
             throw new Error(error)
         }
     }
 
-    async getTotalProduction(from: string, to: string, format: string) {
-        const params = {from, to}
-        return Promise.all(powerPlants.map((powerPlant) => this.getPowerPlantProduction(powerPlant, params)))
+    async getTotalProduction(queryParams) {
+        const {from, to, format} = queryParams
+
+        return Promise.all(powerPlants.map((powerPlant) => this.getPowerPlantProduction(powerPlant, {from, to})))
         .then((response) => {
             const result = this.aggregateAllResult(response)
 
@@ -45,7 +45,7 @@ class EnergyProductionService {
                 : convertJsonToCsv(result)
         })
         .catch(function (error) {
-            console.log(error);
+            throw new Error(error)
         });
     }
 

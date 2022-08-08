@@ -4,16 +4,15 @@ import EnergyProductionService from '../services/energy_production.service'
 
 export class EnergyProductionController {
     async getGlobalProduction(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const { from , to, format } = req.params
+        const { from , to, format } = req.query
 
         if (!(from && to && format)) {
-            console.log('ici')
             res.status(400).send('[ERROR] Missing query params')
             return next()
         }
 
         try {
-            const result = await EnergyProductionService.getTotalProduction(from, to, format)
+            const result = await EnergyProductionService.getTotalProduction(req.query)
             res.status(200).send(result)
         } catch (error) {
             res.status(500).send('[ERROR] Something broke!')
