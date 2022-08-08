@@ -1,21 +1,27 @@
-export type PowerPlantesItem = {
+export type PowerPlantsItem = {
     name: string,
     url: string,
     interval: number,
-    response: 'json'|'csv',
+    responseFormat: 'json'|'csv',
     startLabel: string,
     endLabel: string,
     powerLabel: string
 }
 
+export type ProductionInterval = {
+    start: number,
+    end: number,
+    power: number
+}
+
 const convertMinutesToSeconds = (duration: number): number => duration * 60
 
-export const powerPlantes: PowerPlantesItem[] = [
+export const powerPlants: PowerPlantsItem[] = [
     {
         name: "Hawes",
         url: "https://interview.beta.bcmenergy.fr/hawes",
         interval: convertMinutesToSeconds(15),
-        response: 'json',
+        responseFormat: 'json',
         startLabel: 'start',
         endLabel: 'end',
         powerLabel: 'power'
@@ -24,7 +30,7 @@ export const powerPlantes: PowerPlantesItem[] = [
         name: "Barnsley",
         url: "https://interview.beta.bcmenergy.fr/barnsley",
         interval: convertMinutesToSeconds(30),
-        response: 'json',
+        responseFormat: 'json',
         startLabel: 'start_time',
         endLabel: 'end_time',
         powerLabel: 'value'
@@ -33,7 +39,7 @@ export const powerPlantes: PowerPlantesItem[] = [
         name: "Hounslow",
         url: "https://interview.beta.bcmenergy.fr/hounslow",
         interval: convertMinutesToSeconds(60),
-        response: 'csv',
+        responseFormat: 'csv',
         startLabel: 'debut',
         endLabel: 'fin',
         powerLabel: 'valeur'
