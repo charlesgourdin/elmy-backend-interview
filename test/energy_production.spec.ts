@@ -4,7 +4,6 @@ import * as assert from 'assert'
 
 import EnergyProductionService from '../src/services/energy_production.service'
 import { powerPlants } from '../src/models/power_plants'
-import energy_productionService from '../src/services/energy_production.service';
 
 const expect = chai.expect
 chai.use(chaiHttp);
@@ -53,7 +52,7 @@ describe('Energy Production Service', () => {
         });
     })
 
-    it(`should format json API answer correctly`, async () => {
+    it(`it should format json API answer correctly`, () => {
         const data = [{
             'start_time': 10,
             'end_time': 10,
@@ -69,7 +68,7 @@ describe('Energy Production Service', () => {
         }])
     })
 
-    it(`should format csv API answer correctly`, async () => {
+    it(`it should format csv API answer correctly`, () => {
         const data = 'debut,fin,valeur\n 10,10,10'
 
         const formattedJson = EnergyProductionService.getFormattedJsonFromCSV(data)
@@ -81,7 +80,7 @@ describe('Energy Production Service', () => {
         }])
     })
 
-    it(`should fill power plant missing data`, async () => {
+    it(`it should fill power plant missing data`, () => {
         const interval = 10
         const data = [
             {
@@ -105,14 +104,59 @@ describe('Energy Production Service', () => {
                 power: 5
             }
         ]
-        const expectedSum = (data.length + 1) * 5
+        const expectedResultSum = (data.length + 1) * 5
 
         const result = EnergyProductionService.fillInMissingData(data, interval)
         const resultSum = result.reduce((acc, { power }) => {
             return acc + power
         }, 0)
 
-        expect(resultSum).to.equal(expectedSum)
+        expect(resultSum).to.equal(expectedResultSum)
+    })
+
+    it(`it should set all power plants formated json to the same interval`, async () => {
+        const data = [
+            {
+                start: 0,
+                end: 10,
+                power: 5
+            },
+            {
+                start: 10,
+                end: 20,
+                power: 5
+            },
+            {
+                start: 20,
+                end: 30,
+                power: 5
+            },
+            {
+                start: 30,
+                end: 40,
+                power: 5
+            },
+            {
+                start: 40,
+                end: 50,
+                power: 5
+            }
+        ]
+
+        const interval = 2
+
+        const expectedResultLength = ((data[data.length - 1].end - data[data.length - 1].start) / interval) * data.length
+        const expectedResultSum = data.reduce((acc, { power }) => {
+            return acc + power
+        }, 0)
+
+        const result = EnergyProductionService.setJsonDataOnCommonInterval(data, interval)
+        const resultSum = result.reduce((acc, { power }) => {
+            return acc + power
+        }, 0)
+
+        expect(result.length).to.equal(expectedResultLength)
+        expect(resultSum).to.equal(expectedResultSum)
     })
 
     after(async () => {
