@@ -100,6 +100,24 @@ class EnergyProductionService {
 
         return result
     }
+
+    aggregateAllResult(data: ProductionInterval[][]): ProductionInterval[] {
+        const result = data.reduce((acc, powerPlant, index) => {
+            if (index === 0) {
+                acc.push(...powerPlant)
+            } else {
+                acc = acc.map((item, index) => {
+                    return {
+                        ...item,
+                        power: item.power + powerPlant[index].power,
+                    }
+                })
+            }
+            return acc
+        }, [])
+
+        return result
+    }
 }
 
 export default new EnergyProductionService()
